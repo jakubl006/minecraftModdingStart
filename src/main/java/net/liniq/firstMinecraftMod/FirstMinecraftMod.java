@@ -1,5 +1,6 @@
 package net.liniq.firstMinecraftMod;
 
+import net.liniq.firstMinecraftMod.item.ModItems;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -41,6 +42,15 @@ public class FirstMinecraftMod {
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
     public FirstMinecraftMod(IEventBus modEventBus, ModContainer modContainer) {
+        modEventBus.addListener(this::commonSetup);
+        NeoForge.EVENT_BUS.register(this);
+
+        ModItems.register(modEventBus);
+
+
+
+        modEventBus.addListener(this::addCreative);
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -58,6 +68,9 @@ public class FirstMinecraftMod {
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if(event.getTabKey() == CreativeModeTabs.INGREDIENTS){
+            event.accept(ModItems.CWELIUM);
+        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
